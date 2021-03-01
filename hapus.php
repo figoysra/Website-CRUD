@@ -1,25 +1,15 @@
 <?php
+include ('koneksi.php');
 
-include("config.php");
+$id = $_GET ['id'];
 
-if( isset($_GET['id']) ){
+$query = "DELETE FROM listdata WHERE id='$id'";
 
-    // ambil id dari query string
-    $id = $_GET['id'];
-
-    // buat query hapus
-    $sql = "DELETE FROM produk WHERE id=$id";
-    $query = mysqli_query($db, $sql);
-
-    // apakah query hapus berhasil?
-    if( $query ){
-        header('Location: index.php');
-    } else {
-        die("gagal menghapus...");
-    }
-
-} else {
-    die("akses dilarang...");
+if (mysqli_query($koneksi, $query)){
+    header("location:index.php");
+}
+else {
+    echo "Data gagal dihapus".mysqli_error($koneksi);
 }
 
 ?>
