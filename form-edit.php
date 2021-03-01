@@ -1,68 +1,51 @@
-<?php
+!DOCTYPE html>
+<html lang="en">
 
-include("config.php");
-
-// kalau tidak ada id di query string
-if( !isset($_GET['id']) ){
-    header('Location: index.php');
-}
-
-//ambil id dari query string
-$id = $_GET['id'];
-
-// buat query untuk ambil data dari database
-$sql = "SELECT * FROM produk WHERE id=$id";
-$query = mysqli_query($db, $sql);
-$list = mysqli_fetch_assoc($query);
-
-// jika data yang di-edit tidak ditemukan
-if( mysqli_num_rows($query) < 1 ){
-    die("data tidak ditemukan...");
-}
-
-?>
-
-
-<!DOCTYPE html>
-<html>
 <head>
-    <title>Formulir Produk Arkademy</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="asset/css/bootstrap.min.css">
 </head>
 
 <body>
-    <header>
-        <h3>Formulir Produk Arkademy</h3>
-    </header>
-
-    <form action="proses-edit.php" method="POST">
-
-        <fieldset>
-
-            <input type="hidden" name="id" value="<?php echo $list['id'] ?>" />
-
-        <p>
-            <label for="nama_produk">Nama: </label>
-            <input type="text" name="nama_produk"  value="<?php echo $list['nama_produk'] ?>" />
-        </p>
-        <p>
-            <label for="keterangan">Keterangan: </label>
-            <textarea name="keterangan"><?php echo $list['keterangan'] ?>"</textarea>
-        </p>
-        <p>
-            <label for="harga">Harga: </label>
-            <input type="number" name="harga"  value="<?php echo $list['harga'] ?>" />
-        </p>
-        <p>
-            <label for="jumlah">Jumlah: </label>
-            <textarea name="jumlah"><?php echo $list['jumlah'] ?></textarea>
-        </p>
-        <p>
-            <input type="submit" value="Simpan" name="simpan" />
-        </p>
-        </fieldset>
-
-
+    <h1 style="text-align: center;">Edit Data</h1>
+    <?php
+    include('koneksi.php');
+    $id = $_GET['id'];
+    $query = mysqli_query($koneksi, "select * from listdata where id = '$id'");
+    $row = mysqli_fetch_assoc($query);
+    ?>
+    <form method="POST" role="form">
+        <input type="hidden" name="id" value="<?= $row['id']; ?>">
+        <div class="form-group">
+            <label for=" usr">Nama:</label>
+            <input type="text" class="form-control" name="nama" value="<?= $row['nama']; ?>">
+        </div>
+        <div class="form-group">
+            <label for="jumlah">Jumlah</label>
+            <input type="text" class="form-control" name="jumlah" value="<?= $row['jumlah']; ?>">
+        </div>
+        <div class="form-group">
+            <label for="keterangan">Keterangan</label>
+            <textarea name="keterangan" cols="30" rows="10" class="form-control"><?= $row['keterangan']; ?></textarea>
+        </div>
+        <button type="submit" name="submit" value="simpan" class="btn btn-primary" >Simpan data</button>
     </form>
+    <?php
+    if (isset($_POST['submit'])) {
+        $id = $_POST['id'];
+        $nama = $_POST['nama'];
+        $jumlah = $_POST['jumlah'];
+        $keterangan = $_POST['keterangan'];
 
-    </body>
+        mysqli_query($koneksi, "UPDATE listdata SET nama='$nama', jumlah='$jumlah' , keterangan='$keterangan' where id ='$id'") or die(mysqli_error($koneksi));
+        echo "<script>alert('data berhasil diupdate.');window.location='index.php';</script>";
+    }
+    ?>
+    <script src="asset/js/jquery.js"></script>
+    <script src="asset/js/popper.js"></script>
+    <Script src="asset/js/bootstrap.min.js"></Script>
+</body><
+
 </html>
